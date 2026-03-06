@@ -3,52 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Funky House | Official</title>
+    <title>The Funky House | Bhaktapur</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-900 text-white pb-20">
+<body class="bg-slate-900 text-white pb-32 font-sans">
 
-    <header class="text-center py-12 bg-gradient-to-b from-yellow-500/20 to-transparent">
-        <h1 class="text-6xl font-black text-yellow-400 tracking-tighter">THE FUNKY HOUSE</h1>
-        <p class="text-gray-400 mt-2 text-xl italic font-light">Swad Jo Dil Jeet Le</p>
+    <header class="text-center py-12 bg-gradient-to-b from-yellow-500/10 to-transparent">
+        <h1 class="text-6xl font-black text-yellow-400 tracking-tighter uppercase">THE FUNKY HOUSE</h1>
+        <p class="text-gray-400 mt-2 text-xl italic font-light tracking-widest">Swad Jo Dil Jeet Le</p>
         
-        <div class="mt-6 flex justify-center gap-4">
-            <a href="https://wa.me/91XXXXXXXXXX" class="bg-green-600 px-4 py-2 rounded-full text-sm font-bold"><i class="fab fa-whatsapp"></i> Order Now</a>
-            <a href="https://goo.gl/maps/YOUR_MAP_LINK" class="bg-blue-600 px-4 py-2 rounded-full text-sm font-bold"><i class="fas fa-location-dot"></i> Location</a>
+        <div class="mt-8 flex justify-center px-4">
+            <a href="http://googleusercontent.com/maps.google.com/3" target="_blank" class="bg-blue-600 px-10 py-4 rounded-2xl text-lg font-bold flex items-center gap-3 shadow-lg hover:scale-105 transition active:scale-95">
+                <i class="fas fa-location-dot text-2xl"></i> Find Our Location
+            </a>
         </div>
     </header>
 
-    <div id="menu-container" class="max-w-md mx-auto px-4 space-y-6">
+    <div id="menu-container" class="max-w-md mx-auto px-4 space-y-10">
         </div>
 
-    <div id="admin-panel" class="hidden fixed bottom-5 right-5 left-5 bg-white text-black p-6 rounded-3xl shadow-2xl z-50">
-        <h3 class="font-bold mb-4 flex justify-between">Admin Mode <button onclick="logout()" class="text-red-500">Logout</button></h3>
-        <input id="dish-name" type="text" placeholder="Dish ka Naam" class="w-full border p-2 rounded-lg mb-2">
-        <input id="dish-price" type="number" placeholder="Price ₹" class="w-full border p-2 rounded-lg mb-2">
-        <input id="dish-img" type="text" placeholder="Photo Link (URL)" class="w-full border p-2 rounded-lg mb-4">
-        <button onclick="addItem()" class="w-full bg-yellow-500 font-bold py-3 rounded-xl text-lg">Add to Menu</button>
+    <div id="admin-panel" class="hidden fixed inset-x-4 bottom-6 bg-white text-black p-8 rounded-[40px] shadow-2xl z-50 border-t-8 border-yellow-400">
+        <div class="flex justify-between items-center mb-6">
+            <h3 id="panel-title" class="text-2xl font-black text-slate-800 uppercase tracking-tight">Add Dish</h3>
+            <button onclick="logout()" class="text-red-500 font-bold bg-red-50 px-4 py-1 rounded-full">Logout</button>
+        </div>
+        <input id="dish-name" type="text" placeholder="Dish Name" class="w-full bg-slate-100 p-4 rounded-2xl mb-3 outline-none focus:ring-2 ring-yellow-400 text-lg">
+        <input id="dish-price" type="number" placeholder="Price (NPR रु)" class="w-full bg-slate-100 p-4 rounded-2xl mb-3 outline-none focus:ring-2 ring-yellow-400 text-lg">
+        <input id="dish-img" type="text" placeholder="Photo Link (Direct URL)" class="w-full bg-slate-100 p-4 rounded-2xl mb-6 outline-none focus:ring-2 ring-yellow-400 text-lg">
+        
+        <input type="hidden" id="edit-index" value="-1">
+
+        <div class="flex gap-4">
+            <button onclick="addItem()" id="submit-btn" class="w-full bg-yellow-500 font-black py-5 rounded-3xl text-xl shadow-xl active:scale-95 transition">Update Menu</button>
+            <button onclick="hideAdminPanel()" id="cancel-btn" class="hidden w-1/3 bg-slate-200 text-slate-600 font-bold py-5 rounded-3xl">Cancel</button>
+        </div>
     </div>
 
-    <button id="login-btn" onclick="checkAuth()" class="block mx-auto mt-20 text-gray-700 text-xs">Admin Login</button>
+    <button id="login-btn" onclick="checkAuth()" class="block mx-auto mt-24 text-slate-700 text-xs tracking-widest uppercase opacity-40">Admin Access</button>
 
     <script>
         const PASS = "jaggu786";
 
-        // Auto-Login Check (Facebook Style)
         window.onload = () => {
-            if(localStorage.getItem('isLoggedIn') === 'true') {
-                showAdmin();
-            }
+            if(localStorage.getItem('isLoggedIn') === 'true') showAdmin();
             renderMenu();
         };
 
         function checkAuth() {
+            if(localStorage.getItem('isLoggedIn') === 'true') return;
             let p = prompt("Password Dalein:");
-            if(p === PASS) {
-                localStorage.setItem('isLoggedIn', 'true');
-                showAdmin();
-            } else { alert("Galat Password!"); }
+            if(p === PASS) { localStorage.setItem('isLoggedIn', 'true'); showAdmin(); }
         }
 
         function showAdmin() {
@@ -56,45 +61,75 @@
             document.getElementById('login-btn').classList.add('hidden');
         }
 
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            location.reload();
+        function hideAdminPanel() {
+            document.getElementById('edit-index').value = "-1";
+            document.getElementById('panel-title').innerText = "Add Dish";
+            document.getElementById('submit-btn').innerText = "Update Menu";
+            document.getElementById('cancel-btn').classList.add('hidden');
+            document.getElementById('dish-name').value = '';
+            document.getElementById('dish-price').value = '';
+            document.getElementById('dish-img').value = '';
         }
+
+        function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
         function addItem() {
             let n = document.getElementById('dish-name').value;
             let p = document.getElementById('dish-price').value;
-            let i = document.getElementById('dish-img').value || 'https://via.placeholder.com/150?text=Food';
+            let i = document.getElementById('dish-img').value || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500';
+            let editIdx = document.getElementById('edit-index').value;
             
             if(n && p) {
                 let m = JSON.parse(localStorage.getItem('f_data')) || [];
-                m.push({n, p, i});
+                if(editIdx === "-1") m.push({n, p, i});
+                else m[editIdx] = {n, p, i};
+                
                 localStorage.setItem('f_data', JSON.stringify(m));
+                hideAdminPanel();
                 location.reload();
             }
         }
 
         function renderMenu() {
             let m = JSON.parse(localStorage.getItem('f_data')) || [];
+            let isAdmin = localStorage.getItem('isLoggedIn') === 'true';
+            
             document.getElementById('menu-container').innerHTML = m.map((item, idx) => `
-                <div class="bg-white/10 rounded-3xl overflow-hidden border border-white/5 shadow-xl">
-                    <img src="${item.i}" class="w-full h-48 object-cover">
-                    <div class="p-5 flex justify-between items-center">
-                        <div>
-                            <h2 class="text-2xl font-bold">${item.n}</h2>
-                            <p class="text-yellow-400 font-black text-xl">₹${item.p}</p>
+                <div class="relative bg-slate-800/50 rounded-[45px] overflow-hidden border border-white/5 shadow-2xl">
+                    <img src="${item.i}" class="w-full h-72 object-cover">
+                    <div class="absolute top-6 right-6 bg-yellow-400 text-black px-6 py-2 rounded-full font-black text-2xl shadow-2xl">
+                        <span class="text-xs font-bold uppercase mr-1">रु</span>${item.p}
+                    </div>
+                    <div class="p-8 flex justify-between items-center bg-gradient-to-t from-slate-900 to-transparent">
+                        <h2 class="text-3xl font-black tracking-tight uppercase">${item.n}</h2>
+                        <div class="flex gap-4 ${isAdmin ? '' : 'hidden'}">
+                            <button onclick="startEdit(${idx})" class="w-12 h-12 bg-white/10 text-blue-400 rounded-full flex items-center justify-center text-xl shadow-inner"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteItem(${idx})" class="w-12 h-12 bg-white/10 text-red-500 rounded-full flex items-center justify-center text-xl shadow-inner"><i class="fas fa-trash"></i></button>
                         </div>
-                        <button onclick="deleteItem(${idx})" class="text-red-500 admin-only ${localStorage.getItem('isLoggedIn') ? '' : 'hidden'}"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
+        function startEdit(index) {
+            let item = JSON.parse(localStorage.getItem('f_data'))[index];
+            document.getElementById('dish-name').value = item.n;
+            document.getElementById('dish-price').value = item.p;
+            document.getElementById('dish-img').value = item.i;
+            document.getElementById('edit-index').value = index;
+            document.getElementById('panel-title').innerText = "Edit Dish";
+            document.getElementById('submit-btn').innerText = "Save Changes";
+            document.getElementById('cancel-btn').classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
         function deleteItem(index) {
-            let m = JSON.parse(localStorage.getItem('f_data'));
-            m.splice(index, 1);
-            localStorage.setItem('f_data', JSON.stringify(m));
-            location.reload();
+            if(confirm("Delete this dish?")) {
+                let m = JSON.parse(localStorage.getItem('f_data'));
+                m.splice(index, 1);
+                localStorage.setItem('f_data', JSON.stringify(m));
+                location.reload();
+            }
         }
     </script>
 </body>
