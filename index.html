@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Funky House</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white p-5">
+    <header class="text-center py-10">
+        <h1 class="text-5xl font-black text-yellow-400">THE FUNKY HOUSE</h1>
+        <p class="text-gray-400 mt-2 text-xl italic">Swad Jo Dil Jeet Le</p>
+    </header>
+
+    <div id="public-menu" class="max-w-md mx-auto space-y-4 mb-10">
+        </div>
+
+    <button onclick="unlock()" class="block mx-auto text-xs text-gray-600 opacity-50 mt-20">Admin Login</button>
+
+    <script>
+        function unlock() {
+            if(prompt("Password?") === "jaggu786") {
+                let n = prompt("Dish ka Naam?");
+                let p = prompt("Price (₹)?");
+                if(n && p) {
+                    let m = JSON.parse(localStorage.getItem('f_data')) || [];
+                    m.push({n, p});
+                    localStorage.setItem('f_data', JSON.stringify(m));
+                    location.reload();
+                }
+            } else { alert("Galat Password!"); }
+        }
+
+        let m = JSON.parse(localStorage.getItem('f_data')) || [];
+        document.getElementById('public-menu').innerHTML = m.length ? m.map(i => `
+            <div class="flex justify-between p-4 bg-white/10 rounded-2xl border-l-4 border-yellow-500 shadow-lg">
+                <span class="font-bold text-lg">${i.n}</span>
+                <span class="text-yellow-400 font-black">₹${i.p}</span>
+            </div>
+        `).join('') : "<p class='text-center text-gray-500 italic'>Menu khali hai. Admin se add karein.</p>";
+    </script>
+</body>
+</html>
