@@ -3,41 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Funky House</title>
+    <title>The Funky House | Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-900 text-white p-5">
-    <header class="text-center py-10">
-        <h1 class="text-5xl font-black text-yellow-400">THE FUNKY HOUSE</h1>
-        <p class="text-gray-400 mt-2 text-xl italic">Swad Jo Dil Jeet Le</p>
+<body class="bg-slate-900 text-white pb-20">
+
+    <header class="text-center py-12 bg-gradient-to-b from-yellow-500/20 to-transparent">
+        <h1 class="text-6xl font-black text-yellow-400 tracking-tighter">THE FUNKY HOUSE</h1>
+        <p class="text-gray-400 mt-2 text-xl italic font-light">Swad Jo Dil Jeet Le</p>
+        
+        <div class="mt-6 flex justify-center gap-4">
+            <a href="https://wa.me/91XXXXXXXXXX" class="bg-green-600 px-4 py-2 rounded-full text-sm font-bold"><i class="fab fa-whatsapp"></i> Order Now</a>
+            <a href="https://goo.gl/maps/YOUR_MAP_LINK" class="bg-blue-600 px-4 py-2 rounded-full text-sm font-bold"><i class="fas fa-location-dot"></i> Location</a>
+        </div>
     </header>
 
-    <div id="public-menu" class="max-w-md mx-auto space-y-4 mb-10">
+    <div id="menu-container" class="max-w-md mx-auto px-4 space-y-6">
         </div>
 
-    <button onclick="unlock()" class="block mx-auto text-xs text-gray-600 opacity-50 mt-20">Admin Login</button>
+    <div id="admin-panel" class="hidden fixed bottom-5 right-5 left-5 bg-white text-black p-6 rounded-3xl shadow-2xl z-50">
+        <h3 class="font-bold mb-4 flex justify-between">Admin Mode <button onclick="logout()" class="text-red-500">Logout</button></h3>
+        <input id="dish-name" type="text" placeholder="Dish ka Naam" class="w-full border p-2 rounded-lg mb-2">
+        <input id="dish-price" type="number" placeholder="Price ₹" class="w-full border p-2 rounded-lg mb-2">
+        <input id="dish-img" type="text" placeholder="Photo Link (URL)" class="w-full border p-2 rounded-lg mb-4">
+        <button onclick="addItem()" class="w-full bg-yellow-500 font-bold py-3 rounded-xl text-lg">Add to Menu</button>
+    </div>
+
+    <button id="login-btn" onclick="checkAuth()" class="block mx-auto mt-20 text-gray-700 text-xs">Admin Login</button>
 
     <script>
-        function unlock() {
-            if(prompt("Password?") === "jaggu786") {
-                let n = prompt("Dish ka Naam?");
-                let p = prompt("Price (₹)?");
-                if(n && p) {
-                    let m = JSON.parse(localStorage.getItem('f_data')) || [];
-                    m.push({n, p});
-                    localStorage.setItem('f_data', JSON.stringify(m));
-                    location.reload();
-                }
+        const PASS = "jaggu786";
+
+        // Auto-Login Check (Facebook Style)
+        window.onload = () => {
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                showAdmin();
+            }
+            renderMenu();
+        };
+
+        function checkAuth() {
+            let p = prompt("Password Dalein:");
+            if(p === PASS) {
+                localStorage.setItem('isLoggedIn', 'true');
+                showAdmin();
             } else { alert("Galat Password!"); }
         }
 
-        let m = JSON.parse(localStorage.getItem('f_data')) || [];
-        document.getElementById('public-menu').innerHTML = m.length ? m.map(i => `
-            <div class="flex justify-between p-4 bg-white/10 rounded-2xl border-l-4 border-yellow-500 shadow-lg">
-                <span class="font-bold text-lg">${i.n}</span>
-                <span class="text-yellow-400 font-black">₹${i.p}</span>
-            </div>
-        `).join('') : "<p class='text-center text-gray-500 italic'>Menu khali hai. Admin se add karein.</p>";
+        function showAdmin() {
+            document.getElementById('admin-panel').classList.remove('hidden');
+            document.getElementById('login-btn').classList.add('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        function addItem() {
+            let n = document.getElementById('dish-name').value;
+            let p = document.getElementById('dish-price').value;
+            let i = document.getElementById('dish-img').value || 'https://via.placeholder.com/150?text=Food';
+            
+            if(n && p) {
+                let m = JSON.parse(localStorage.getItem('f_data')) || [];
+                m.push({n, p, i});
+                localStorage.setItem('f_data', JSON.stringify(m));
+                location.reload();
+            }
+        }
+
+        function renderMenu() {
+            let m = JSON.parse(localStorage.getItem('f_data')) || [];
+            document.getElementById('menu-container').innerHTML = m.map((item, idx) => `
+                <div class="bg-white/10 rounded-3xl overflow-hidden border border-white/5 shadow-xl">
+                    <img src="${item.i}" class="w-full h-48 object-cover">
+                    <div class="p-5 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-bold">${item.n}</h2>
+                            <p class="text-yellow-400 font-black text-xl">₹${item.p}</p>
+                        </div>
+                        <button onclick="deleteItem(${idx})" class="text-red-500 admin-only ${localStorage.getItem('isLoggedIn') ? '' : 'hidden'}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteItem(index) {
+            let m = JSON.parse(localStorage.getItem('f_data'));
+            m.splice(index, 1);
+            localStorage.setItem('f_data', JSON.stringify(m));
+            location.reload();
+        }
     </script>
 </body>
 </html>
