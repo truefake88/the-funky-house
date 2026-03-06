@@ -3,66 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jaggu Bhai School App</title>
+    <title>Jaggu Bhai Ka Nepal Restaurant</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f4f4f4; }
-        .box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        input { padding: 8px; margin: 5px; width: 80%; }
-        button { padding: 10px; background: green; color: white; border: none; cursor: pointer; }
+        body { font-family: sans-serif; margin: 0; padding: 10px; background: #f9f9f9; }
+        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        img { width: 100%; border-radius: 8px; }
+        .btn { background: #d32f2f; color: white; padding: 10px; border: none; width: 100%; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <h1>🏫 Jaggu Bhai School Management</h1>
+    <h1>🇳🇵 Jaggu Bhai's Funky House</h1>
 
-    <div class="box">
-        <h3>Naya Student Jodein</h3>
-        <input type="text" id="s_name" placeholder="Student ka Naam">
-        <input type="text" id="s_class" placeholder="Class (e.g. 10th)">
-        <input type="number" id="s_roll" placeholder="Roll Number">
-        <button onclick="addStudent()">Save Karo</button>
+    <div class="card">
+        <h3>📍 Hamari Location</h3>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.84!2d85.312!3d27.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19!2sKathmandu!5e0!3m2!1sen!2snp!4v123456789" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
     </div>
 
-    <div class="box">
-        <h3>Students ki List</h3>
-        <div id="student-list">Loading...</div>
+    <div class="card">
+        <h3>➕ Nayi Dish Jodein (Admin)</h3>
+        <input type="text" id="dish_n" placeholder="Dish ka Naam" style="width:90%; padding:8px; margin-bottom:5px;"><br>
+        <input type="number" id="dish_p" placeholder="Price (Rs.)" style="width:90%; padding:8px; margin-bottom:5px;"><br>
+        <input type="text" id="dish_i" placeholder="Photo Link (URL)" style="width:90%; padding:8px; margin-bottom:10px;"><br>
+        <button class="btn" onclick="saveDish()">Menu Mein Dalein</button>
+    </div>
+
+    <div class="card">
+        <h3>🍴 Hamara Special Menu</h3>
+        <div id="menu-items">Loading...</div>
     </div>
 
     <script>
-        // Tumhara naya Supabase Connection
+        // Naya Connection (Jo tumne abhi dhoonda hai)
         const supabaseUrl = 'https://xxbuhdezzesdwgsbzrfh.supabase.co';
         const supabaseKey = 'Sb_publishable_F1fuVfJj5NLrWdcIRWK_Gg_huFnID5y';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Data Save karne ke liye
-        async function addStudent() {
-            const name = document.getElementById('s_name').value;
-            const s_class = document.getElementById('s_class').value;
-            const roll = document.getElementById('s_roll').value;
+        // Menu Save Karne ke liye
+        async function saveDish() {
+            const n = document.getElementById('dish_n').value;
+            const p = document.getElementById('dish_p').value;
+            const i = document.getElementById('dish_i').value;
 
-            const { error } = await _supabase
-                .from('students')
-                .insert([{ name: name, class: s_class, roll_no: roll }]);
-
+            const { error } = await _supabase.from('dishes').insert([{ n, p, i }]);
             if (error) alert("Galti: " + error.message);
-            else { alert("Student save ho gaya!"); fetchStudents(); }
+            else { alert("Dish add ho gayi!"); loadMenu(); }
         }
 
-        // Data dikhane ke liye
-        async function fetchStudents() {
-            const { data, error } = await _supabase.from('students').select('*');
-            const listDiv = document.getElementById('student-list');
-            
-            if (error) listDiv.innerHTML = error.message;
+        // Menu Load Karne ke liye
+        async function loadMenu() {
+            const { data, error } = await _supabase.from('dishes').select('*');
+            const div = document.getElementById('menu-items');
+            if (error) { div.innerHTML = "Key sahi nahi hai!"; }
             else {
-                listDiv.innerHTML = "";
-                data.forEach(s => {
-                    listDiv.innerHTML += `<p>✅ ${s.name} - Class: ${s.class} (Roll: ${s.roll_no})</p>`;
+                div.innerHTML = "";
+                data.forEach(item => {
+                    div.innerHTML += `
+                        <div style="border-bottom:1px solid #eee; padding:10px 0;">
+                            <img src="${item.i}" alt="${item.n}" onerror="this.src='https://via.placeholder.com/150'">
+                            <h4>${item.n}</h4>
+                            <p style="color:green; font-weight:bold;">Rs. ${item.p}</p>
+                        </div>`;
                 });
             }
         }
-        fetchStudents();
+        loadMenu();
     </script>
 </body>
 </html>
