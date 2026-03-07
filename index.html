@@ -90,3 +90,135 @@
     <script src="script.js"></script>
 </body>
 </html>
+:root {
+    --gold: #D4AF37;
+    --black: #0a0a0a;
+    --grey: #1a1a1a;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 5%;
+    background: rgba(0,0,0,0.9);
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid var(--gold);
+}
+
+.logo {
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('your-bg-image.jpg');
+}
+
+.btn-gold {
+    background: var(--gold);
+    color: black;
+    padding: 10px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 50px 5%;
+}
+
+.menu-category {
+    background: var(--grey);
+    padding: 20px;
+    border-left: 4px solid var(--gold);
+}
+
+.menu-category h3 { color: var(--gold); }
+
+ul { list-style: none; padding: 0; }
+
+li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px dotted #444;
+}
+
+.booking-section {
+    background: #111;
+    padding: 50px 5%;
+    text-align: center;
+}
+
+form input, form select {
+    padding: 10px;
+    margin: 10px;
+    width: 250px;
+    background: #222;
+    color: white;
+    border: 1px solid var(--gold);
+}
+
+.star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #444;
+}
+
+.star.active { color: var(--gold); }
+// Supabase Configuration
+const _supabase = supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+
+// Handle Booking Form
+document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('name').value;
+    const persons = document.getElementById('persons').value;
+    const contact = document.getElementById('contact').value;
+
+    const { data, error } = await _supabase
+        .from('bookings')
+        .insert([{ name, persons, contact_number: contact }]);
+
+    if (error) {
+        alert("Error booking table. Please try again.");
+    } else {
+        alert("Booking Request Sent! We will contact you soon.");
+        // Email Notification ke liye aap Supabase Edge Functions use kar sakte hain
+    }
+});
+
+// Star Rating Logic
+const stars = document.querySelectorAll('.star');
+stars.forEach(star => {
+    star.addEventListener('click', () => {
+        let val = star.getAttribute('data-value');
+        stars.forEach(s => s.classList.remove('active'));
+        for(let i=0; i<val; i++) stars[i].classList.add('active');
+        // Save rating to Supabase logic here
+    });
+});
+            
