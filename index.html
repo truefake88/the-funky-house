@@ -54,10 +54,61 @@
     </div>
 
     <script>
-        const supabaseUrl = 'https://xxbuhdezzesdwgsbzrfh.supabase.co';
-        const supabaseKey = 'Sb_publishable_F1fuVfJj5NLrWdcIRWK_Gg_huFnID5y';
+                const supabaseUrl = 'https://xxbuhdezzesdwgsbzrfh.supabase.co';
+        // Ye hai sahi poori chabi (API Key)
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4YnVoZGV6emVzZHdnczJ6cmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzMjQ5MjgsImV4cCI6MjA1NjkwMDkyOH0.s9_fUuVfJj5NLrWdcIRWK_Gg_huFnID5y-Nq8'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let allDishes = [];
+
+        async function loadMenu() {
+            const { data, error } = await _supabase.from('dishes').select('*');
+            if (!error) { allDishes = data; renderItems(data); }
+        }
+
+        function renderItems(items) {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = items.map(item => `
+                <div class="relative bg-slate-900 rounded-[45px] overflow-hidden border border-white/5 shadow-2xl mb-8">
+                    <img src="${item.i}" class="w-full h-72 object-cover opacity-90">
+                    <div class="absolute top-6 right-6 bg-yellow-400 text-black px-6 py-2 rounded-full font-black text-xl"> रु ${item.p} </div>
+                    <div class="p-8 bg-gradient-to-t from-slate-950 to-transparent">
+                        <h2 class="text-3xl font-black uppercase tracking-tight">${item.n}</h2>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            if(cat === 'all') renderItems(allDishes);
+            else renderItems(allDishes.filter(d => d.category === cat));
+        }
+
+        function filterMenu() {
+            let val = document.getElementById('searchBar').value.toLowerCase();
+            renderItems(allDishes.filter(d => d.n.toLowerCase().includes(val)));
+        }
+
+        function openAdmin() { document.getElementById('adminModal').classList.remove('hidden'); }
+        function closeAdmin() { document.getElementById('adminModal').classList.add('hidden'); }
+
+        async function saveToSupabase() {
+            const n = document.getElementById('n').value;
+            const p = document.getElementById('p').value;
+            const i = document.getElementById('i').value;
+            const category = document.getElementById('cat').value;
+            
+            if(n && p && i) {
+                const { error } = await _supabase.from('dishes').insert([{ n, p, i, category }]);
+                if (error) alert("Error: " + error.message);
+                else { alert("Dish Saved!"); location.reload(); }
+            } else { alert("Pehle details bhariye!"); }
+        }
+
+        window.onload = loadMenu;
+    </script>
+</body>
+</html>
+
 
         async function loadMenu() {
             const { data, error } = await _supabase.from('dishes').select('*');
