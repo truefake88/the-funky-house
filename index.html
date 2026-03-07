@@ -1,73 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Funky House | Nepal</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="grid-overlay"></div>
+:root {
+    --accent: #bc13fe; /* Purple Neon */
+    --gold: #ffcc00;
+    --bg: #030303;
+    --glass: rgba(255, 255, 255, 0.03);
+}
 
-    <header>
-        <div class="brand">THE FUNKY HOUSE</div>
-        <div class="nav-links">
-            <a href="#menu">Menu</a>
-            <a href="#booking">Table Booking</a>
-            <a href="https://share.google/hQUMseIzntR9NVcHx" target="_blank">Location</a>
-        </div>
-    </header>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <section class="hero">
-        <div class="badge">AI-POWERED STARTUP • NEPAL</div>
-        <h1>YOUR BRAND <br><span class="gold-text">ONLINE.</span></h1>
-        <p>Sizzlers, Momos, and the best vibe in town.</p>
-        <div class="hero-btns">
-            <a href="#menu" class="btn-main">EXPLORE MENU</a>
-            <a href="#booking" class="btn-outline">BOOK A TABLE</a>
-        </div>
-    </section>
+body {
+    background: var(--bg);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+}
 
-    <section id="menu" class="menu-section">
-        <h2 class="title-bg">MENU</h2>
-        <div class="menu-container">
-            <div class="menu-card">
-                <img src="https://images.unsplash.com/photo-1544025162-d76694265947" alt="Sizzler">
-                <div class="card-content">
-                    <h3>Chicken Sizzler <span class="price">NPR 520</span></h3>
-                    <p>Fragrant plate of grilled chicken, garlic noodles, and veggies.</p>
-                </div>
-            </div>
+/* Background Grid Animation */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(to right, rgba(188, 19, 254, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(188, 19, 254, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
+}
 
-            <div class="menu-card">
-                <img src="https://images.unsplash.com/photo-1534422298391-e4f8c170db0f" alt="Momo">
-                <div class="card-content">
-                    <h3>C-Momo (Chicken) <span class="price">NPR 210</span></h3>
-                    <p>Spicy chili momo with our secret house sauce.</p>
-                </div>
-            </div>
-            </div>
-    </section>
+.glow-sphere {
+    position: fixed;
+    top: -10%; right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(188, 19, 254, 0.15), transparent 70%);
+    filter: blur(80px);
+    z-index: -1;
+}
 
-    <section id="booking" class="booking-card">
-        <h2>Reserve Your Table</h2>
-        <form id="resForm">
-            <div class="input-group">
-                <input type="text" placeholder="Full Name" required>
-                <input type="number" placeholder="No. of Persons" min="1" max="20" required>
-            </div>
-            <input type="tel" placeholder="Contact Number (WhatsApp)" required>
-            <button type="submit" class="btn-main">SEND REQUEST</button>
-        </form>
-    </section>
+header {
+    display: flex; justify-content: space-between;
+    padding: 40px 10%; align-items: center;
+}
 
-    <footer>
-        <div class="socials">
-            <a href="https://www.instagram.com/the_funkyhouse">INSTAGRAM</a>
-            <a href="#">FACEBOOK</a>
-        </div>
-        <p>santoshbc794@gmail.com | © 2026</p>
-    </footer>
-</body>
-</html>
+.logo { font-family: 'Syncopate'; font-weight: 700; font-size: 1.2rem; letter-spacing: 3px; }
+.logo span { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+
+.hero { text-align: center; padding: 120px 5%; }
+.top-badge { 
+    background: var(--accent); color: white; padding: 5px 15px; 
+    font-size: 0.7rem; display: inline-block; margin-bottom: 20px;
+}
+
+h1 { font-family: 'Syncopate'; font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
+.gradient-text { 
+    background: linear-gradient(90deg, #fff, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.btn-primary {
+    background: white; color: black; padding: 18px 40px;
+    text-decoration: none; font-weight: 700; letter-spacing: 1px;
+    transition: 0.4s;
+}
+
+.btn-primary:hover { box-shadow: 0 0 30px rgba(255,255,255,0.4); }
+
+/* Glassmorphism Cards */
+.menu-container {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px; padding: 100px 10%;
+}
+
+.glass-card {
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; overflow: hidden;
+    backdrop-filter: blur(20px); transition: 0.5s;
+}
+
+.glass-card:hover { transform: scale(1.02); border-color: var(--accent); }
+
+.card-img { width: 100%; height: 250px; background-size: cover; background-position: center; }
+
+.card-info { padding: 30px; }
+.price { color: var(--accent); float: right; font-weight: 700; }
+
+/* Booking Form Luxe */
+.booking-glass {
+    max-width: 800px; margin: 0 auto 100px;
+    padding: 60px; background: rgba(188, 19, 254, 0.02);
+    border: 1px dashed var(--accent); border-radius: 2px;
+}
+
+input, select {
+    width: 100%; padding: 20px; margin: 15px 0;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    color: white; outline: none;
+}
+
+.btn-glow {
+    width: 100%; padding: 20px; background: var(--accent);
+    color: white; border: none; font-weight: 700; cursor: pointer;
+    box-shadow: 0 0 20px var(--accent);
+}
