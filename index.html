@@ -1,33 +1,73 @@
-// Supabase Configuration
-const _supabase = supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Funky House | Nepal</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="grid-overlay"></div>
 
-// Handle Booking Form
-document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const name = document.getElementById('name').value;
-    const persons = document.getElementById('persons').value;
-    const contact = document.getElementById('contact').value;
+    <header>
+        <div class="brand">THE FUNKY HOUSE</div>
+        <div class="nav-links">
+            <a href="#menu">Menu</a>
+            <a href="#booking">Table Booking</a>
+            <a href="https://share.google/hQUMseIzntR9NVcHx" target="_blank">Location</a>
+        </div>
+    </header>
 
-    const { data, error } = await _supabase
-        .from('bookings')
-        .insert([{ name, persons, contact_number: contact }]);
+    <section class="hero">
+        <div class="badge">AI-POWERED STARTUP • NEPAL</div>
+        <h1>YOUR BRAND <br><span class="gold-text">ONLINE.</span></h1>
+        <p>Sizzlers, Momos, and the best vibe in town.</p>
+        <div class="hero-btns">
+            <a href="#menu" class="btn-main">EXPLORE MENU</a>
+            <a href="#booking" class="btn-outline">BOOK A TABLE</a>
+        </div>
+    </section>
 
-    if (error) {
-        alert("Error booking table. Please try again.");
-    } else {
-        alert("Booking Request Sent! We will contact you soon.");
-        // Email Notification ke liye aap Supabase Edge Functions use kar sakte hain
-    }
-});
+    <section id="menu" class="menu-section">
+        <h2 class="title-bg">MENU</h2>
+        <div class="menu-container">
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947" alt="Sizzler">
+                <div class="card-content">
+                    <h3>Chicken Sizzler <span class="price">NPR 520</span></h3>
+                    <p>Fragrant plate of grilled chicken, garlic noodles, and veggies.</p>
+                </div>
+            </div>
 
-// Star Rating Logic
-const stars = document.querySelectorAll('.star');
-stars.forEach(star => {
-    star.addEventListener('click', () => {
-        let val = star.getAttribute('data-value');
-        stars.forEach(s => s.classList.remove('active'));
-        for(let i=0; i<val; i++) stars[i].classList.add('active');
-        // Save rating to Supabase logic here
-    });
-});
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1534422298391-e4f8c170db0f" alt="Momo">
+                <div class="card-content">
+                    <h3>C-Momo (Chicken) <span class="price">NPR 210</span></h3>
+                    <p>Spicy chili momo with our secret house sauce.</p>
+                </div>
+            </div>
+            </div>
+    </section>
+
+    <section id="booking" class="booking-card">
+        <h2>Reserve Your Table</h2>
+        <form id="resForm">
+            <div class="input-group">
+                <input type="text" placeholder="Full Name" required>
+                <input type="number" placeholder="No. of Persons" min="1" max="20" required>
+            </div>
+            <input type="tel" placeholder="Contact Number (WhatsApp)" required>
+            <button type="submit" class="btn-main">SEND REQUEST</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="socials">
+            <a href="https://www.instagram.com/the_funkyhouse">INSTAGRAM</a>
+            <a href="#">FACEBOOK</a>
+        </div>
+        <p>santoshbc794@gmail.com | © 2026</p>
+    </footer>
+</body>
+</html>
