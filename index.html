@@ -1,145 +1,92 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Funky House - Premium Dining</title>
-    <style>
-        /* Global Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f0f; color: #f5f5f5; line-height: 1.6; }
-        
-        /* Header & Navigation */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
-        .logo { font-size: 24px; font-weight: bold; color: #d4a373; text-transform: uppercase; letter-spacing: 2px; }
-        nav a { color: white; text-decoration: none; margin: 0 15px; font-size: 14px; text-transform: uppercase; transition: 0.3s; }
-        nav a:hover { color: #d4a373; }
-        .btn-reserve { background-color: #d4a373; color: black; padding: 10px 20px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 4px; }
-
-        /* Hero Section */
-        .hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; }
-        .hero h1 { font-size: 60px; margin-bottom: 10px; color: #fff; }
-        .hero p { font-size: 20px; color: #d4a373; font-style: italic; margin-bottom: 30px; }
-        .cta-btns button { margin: 10px; padding: 15px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-menu { background: #d4a373; color: #000; }
-        .btn-table { background: transparent; border: 2px solid #d4a373 !important; color: #d4a373; }
-
-        /* Menu Selection Section */
-        .menu-container { padding: 60px 8%; background-color: #121212; }
-        .section-title { text-align: center; font-size: 36px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 3px; border-bottom: 2px solid #d4a373; display: inline-block; width: 100%; padding-bottom: 10px; }
-        
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
-        .menu-item { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .item-info h3 { font-size: 18px; color: #fff; text-transform: uppercase; }
-        .item-info p { font-size: 13px; color: #888; margin-top: 5px; }
-        .price { color: #d4a373; font-weight: bold; font-size: 18px; }
-
-        /* Reservation Form */
-        .reservation { padding: 60px 8%; background: #0a0a0a; text-align: center; }
-        .reserve-form { max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .reserve-form input, .reserve-form textarea, .reserve-form select { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; }
-        .reserve-form textarea { grid-column: span 2; }
-        .full-width { grid-column: span 2; }
-
-        /* Footer */
-        footer { padding: 40px 8%; background: #000; border-top: 1px solid #222; text-align: center; }
-        .footer-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
-        .footer-box h4 { color: #d4a373; margin-bottom: 15px; text-transform: uppercase; }
-    </style>
+    <title>The Funky House | Restaurant & Bar</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<header>
-    <div class="logo">The Funky House</div>
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#menu">Menu</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-    </nav>
-    <button class="btn-reserve">Reserve</button>
-</header>
+    <header>
+        <div class="logo">THE FUNKY HOUSE</div>
+        <nav>
+            <a href="#menu">Menu</a>
+            <a href="#booking">Book Table</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
 
-<section class="hero" id="home">
-    <h1>Bold Food. Funky Vibes.</h1>
-    <p>Premium dining experience from Nepalese momo to Italian pizza.</p>
-    <div class="cta-btns">
-        <button class="btn-menu">EXPLORE OUR MENU</button>
-        <button class="btn-table">RESERVE A TABLE</button>
-    </div>
-</section>
+    <section class="hero">
+        <h1>YOUR BRAND ONLINE.</h1>
+        <p>Experience the best Sizzlers & Momos in Nepal.</p>
+        <a href="#booking" class="btn-gold">Explore Now</a>
+    </section>
 
-<section class="menu-container" id="menu">
-    <h2 class="section-title">Menu Selection</h2>
-    
-    <div class="menu-grid">
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Classic Chicken Burger</h3>
-                <p>Crispy fried chicken fillet with lettuce in a seeded bun.</p>
+    <section id="menu" class="container">
+        <h2 class="section-title">Our Menu</h2>
+        <div class="menu-grid">
+            <div class="menu-category">
+                <h3>Sizzlers</h3>
+                <ul>
+                    <li>Chicken Sizzler <span>NPR 520</span></li>
+                    <li>Sizzler 555 <span>NPR 555</span></li>
+                </ul>
             </div>
-            <div class="price">Rs 450</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Buffalo Chicken Wrap</h3>
-                <p>Spicy tender buffalo in a wrap with fresh veggies.</p>
+            <div class="menu-category">
+                <h3>Momo Special</h3>
+                <ul>
+                    <li>Chicken (Steam/Fried) <span>100/180</span></li>
+                    <li>Buff (Steam/Fried) <span>140/160</span></li>
+                    <li>C-Momo (Chicken) <span>210</span></li>
+                </ul>
             </div>
-            <div class="price">Rs 300</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Sekuwa Platter</h3>
-                <p>Traditional smoky grilled goodness with pickles.</p>
             </div>
-            <div class="price">Rs 650+</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Mutton Set</h3>
-                <p>Served with puffed rice, radish pickle and side dishes.</p>
-            </div>
-            <div class="price">Rs 450</div>
-        </div>
-    </div>
-</section>
+    </section>
 
-<section class="reservation" id="contact">
-    <h2 class="section-title">Reserve a Table</h2>
-    <form class="reserve-form">
-        <input type="text" placeholder="Your Name">
-        <input type="tel" placeholder="Phone Number">
-        <input type="email" placeholder="Email (Optional)">
-        <select>
-            <option>1 Person</option>
-            <option>2 People</option>
-            <option>4 People</option>
-            <option>Group (5+)</option>
-        </select>
-        <input type="date">
-        <input type="time">
-        <textarea rows="4" placeholder="Special Requests (Allergies, Birthday, etc.)"></textarea>
-        <button type="submit" class="btn-reserve full-width">Send Reservation Request</button>
-    </form>
-</section>
+    <section id="booking" class="booking-section">
+        <h2>Table Booking</h2>
+        <form id="bookingForm">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <select id="persons">
+                <option value="1">1 Person</option>
+                <option value="2">2 Persons</option>
+                <option value="3">3 Persons</option>
+                <option value="4">4 Persons</option>
+                <option value="5">5 Persons</option>
+                <option value="6+">6+ Persons</option>
+            </select>
+            <input type="tel" id="contact" placeholder="Contact Number" required>
+            <button type="submit" class="btn-gold">Request Booking</button>
+        </form>
+    </section>
 
-<footer>
-    <div class="footer-info">
-        <div class="footer-box">
-            <h4>Address</h4>
-            <p>Lohakithali-1, Bhaktapur, Nepal</p>
+    <section class="ratings">
+        <h3>Rate Your Experience</h3>
+        <div id="star-rating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
         </div>
-        <div class="footer-box">
-            <h4>Opening Hours</h4>
-            <p>Mon - Sun: 10:00 AM - 9:00 PM</p>
-        </div>
-        <div class="footer-box">
-            <h4>Contact</h4>
-            <p>Phone: 01-5910606</p>
-        </div>
-    </div>
-    <p>&copy; 2024 The Funky House. Powered by RawThink AI.</p>
-</footer>
+        <p>Total Ratings: <span id="ratingCount">0</span></p>
+    </section>
 
+    <footer id="contact">
+        <div class="social-links">
+            <a href="https://www.facebook.com/your-page-link" target="_blank">Facebook</a>
+            <a href="https://www.instagram.com/the_funkyhouse?igsh=MXhlbW9ucnpiZ3hucw==" target="_blank">Instagram</a>
+            <a href="https://share.google/hQUMseIzntR9NVcHx" target="_blank">Find us on Maps</a>
+        </div>
+        <div class="about-info">
+            <p><strong>Service:</strong> Delivery, Takeaway, Dine-in, Great Coffee & Cocktails.</p>
+            <p>© 2026 The Funky House - Nepal</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
