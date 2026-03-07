@@ -3,56 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE FUNKY HOUSE - Swad Jo Dil Jeet Le</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>The Funky House | Bhaktapur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Arial', sans-serif; background: #121826; color: white; text-align: center; margin: 0; padding: 10px; }
-        .header { color: #FFD700; font-size: 32px; font-weight: bold; margin-top: 20px; }
-        .tagline { font-style: italic; color: #a0a0a0; }
-        .btn-location { background: #2563eb; color: white; padding: 12px 25px; border-radius: 50px; border: none; margin: 20px 0; display: inline-flex; align-items: center; text-decoration: none; }
-        .menu-card { background: #1e293b; border-radius: 20px; overflow: hidden; margin-bottom: 20px; position: relative; text-align: left; }
-        .price-tag { position: absolute; top: 15px; right: 15px; background: #FFD700; color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
-        .dish-img { width: 100%; height: 250px; object-fit: cover; }
-        .dish-info { padding: 15px; background: #1e293b; }
-        .dish-name { font-size: 20px; text-transform: uppercase; font-weight: bold; }
+        /* Smooth opening for Admin Panel */
+        #admin-panel { transition: transform 0.4s ease-in-out; transform: translateY(110%); }
+        #admin-panel.active { transform: translateY(0); }
     </style>
 </head>
-<body>
+<body class="bg-slate-900 text-white pb-10 font-sans">
 
-    <div class="header">THE FUNKY HOUSE</div>
-    <div class="tagline">Swad Jo Dil Jeet Le</div>
+    <header class="text-center py-12 bg-gradient-to-b from-yellow-500/10 to-transparent">
+        <h1 class="text-6xl font-black text-yellow-400 tracking-tighter uppercase">THE FUNKY HOUSE</h1>
+        <p class="text-gray-400 mt-2 text-xl italic font-light tracking-widest">Swad Jo Dil Jeet Le</p>
+        
+        <div class="mt-8 flex justify-center px-4">
+            <a href="https://maps.app.goo.gl/3" target="_blank" class="bg-blue-600 px-10 py-4 rounded-2xl text-lg font-bold flex items-center gap-3 shadow-lg hover:scale-105 transition active:scale-95">
+                <i class="fas fa-location-dot text-2xl"></i> Find Our Location
+            </a>
+        </div>
+    </header>
 
-    <a href="https://maps.google.com" class="btn-location">📍 Find Our Location</a>
-
-    <div id="menu-container">
+    <div id="menu-container" class="max-w-md mx-auto px-4 space-y-10 mb-20">
         </div>
 
-    <script>
-        const supabaseUrl = 'https://xxbuhdezzesdwgsbzrfh.supabase.co';
-        const supabaseKey = 'Sb_publishable_F1fuVfJj5NLrWdcIRWK_Gg_huFnID5y';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    <button id="toggle-admin" onclick="togglePanel()" class="hidden fixed bottom-6 right-6 w-16 h-16 bg-yellow-500 text-black rounded-full shadow-2xl z-[60] text-2xl flex items-center justify-center">
+        <i class="fas fa-plus"></i>
+    </button>
 
-        async function loadMenu() {
-            const { data, error } = await _supabase.from('dishes').select('*');
-            const container = document.getElementById('menu-container');
-            
-            if (error) {
-                container.innerHTML = "<p>Error: " + error.message + "</p>";
-            } else {
-                container.innerHTML = "";
-                data.forEach(dish => {
-                    container.innerHTML += `
-                        <div class="menu-card">
-                            <div class="price-tag">रु ${dish.p}</div>
-                            <img src="${dish.i}" class="dish-img" onerror="this.src='https://via.placeholder.com/300'">
-                            <div class="dish-info">
-                                <div class="dish-name">${dish.n}</div>
-                            </div>
-                        </div>`;
-                });
+    <div id="admin-panel" class="fixed inset-x-0 bottom-0 bg-white text-black p-8 rounded-t-[40px] shadow-2xl z-[55] border-t-8 border-yellow-400">
+        <div class="flex justify-between items-center mb-6">
+            <h3 id="panel-title" class="text-2xl font-black text-slate-800 uppercase">Manage Menu</h3>
+            <button onclick="logout()" class="text-red-500 font-bold bg-red-50 px-4 py-1 rounded-full">Logout</button>
+        </div>
+        <input id="dish-name" type="text" placeholder="Dish Name" class="w-full bg-slate-100 p-4 rounded-2xl mb-3 outline-none text-lg">
+        <input id="dish-price" type="number" placeholder="Price (NPR रु)" class="w-full bg-slate-100 p-4 rounded-2xl mb-3 outline-none text-lg">
+        <input id="dish-img" type="text" placeholder="Photo Link (Direct URL)" class="w-full bg-slate-100 p-4 rounded-2xl mb-6 outline-none text-lg">
+        
+        <input type="hidden" id="edit-index" value="-1">
+
+        <div class="flex gap-4">
+            <button onclick="addItem()" id="submit-btn" class="w-full bg-yellow-500 font-black py-5 rounded-3xl text-xl shadow-xl active:scale-95 transition">Save Item</button>
+            <button onclick="togglePanel()" class="w-1/3 bg-slate-200 text-slate-600 font-bold py-5 rounded-3xl">Close</button>
+        </div>
+    </div>
+
+    <button id="login-btn" onclick="checkAuth()" class="block mx-auto mt-24 text-slate-700 text-xs tracking-widest uppercase opacity-40">Admin Access</button>
+
+    <script>
+        const PASS = "jaggu786";
+
+        window.onload = () => {
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('toggle-admin').classList.remove('hidden');
+                document.getElementById('login-btn').classList.add('hidden');
+            }
+            renderMenu();
+        };
+
+        function checkAuth() {
+            let p = prompt("Password Dalein:");
+            if(p === PASS) {
+                localStorage.setItem('isLoggedIn', 'true');
+                location.reload();
             }
         }
-        loadMenu();
+
+        function togglePanel() {
+            document.getElementById('admin-panel').classList.toggle('active');
+        }
+
+        function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
+
+        function addItem() {
+            let n = document.getElementById('dish-name').value;
+            let p = document.getElementById('dish-price').value;
+            let i = document.getElementById('dish-img').value || 'https://via.placeholder.com/500';
+            let editIdx = document.getElementById('edit-index').value;
+            
+            if(n && p) {
+                let m = JSON.parse(localStorage.getItem('f_data')) || [];
+                if(editIdx === "-1") m.push({n, p, i});
+                else m[editIdx] = {n, p, i};
+                
+                localStorage.setItem('f_data', JSON.stringify(m));
+                togglePanel();
+                location.reload();
+            }
+        }
+
+        function renderMenu() {
+            let m = JSON.parse(localStorage.getItem('f_data')) || [];
+            let isAdmin = localStorage.getItem('isLoggedIn') === 'true';
+            
+            document.getElementById('menu-container').innerHTML = m.map((item, idx) => `
+                <div class="relative bg-slate-800 rounded-[45px] overflow-hidden border border-white/5 shadow-2xl">
+                    <img src="${item.i}" class="w-full h-72 object-cover">
+                    <div class="absolute top-6 right-6 bg-yellow-400 text-black px-6 py-2 rounded-full font-black text-2xl">
+                        <span class="text-xs font-bold uppercase mr-1">रु</span>${item.p}
+                    </div>
+                    <div class="p-8 flex justify-between items-center bg-gradient-to-t from-slate-900 to-transparent">
+                        <h2 class="text-3xl font-black uppercase tracking-tight">${item.n}</h2>
+                        <div class="flex gap-4 ${isAdmin ? '' : 'hidden'}">
+                            <button onclick="startEdit(${idx})" class="w-12 h-12 bg-white/10 text-blue-400 rounded-full flex items-center justify-center text-xl"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteItem(${idx})" class="w-12 h-12 bg-white/10 text-red-500 rounded-full flex items-center justify-center text-xl"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function startEdit(index) {
+            let item = JSON.parse(localStorage.getItem('f_data'))[index];
+            document.getElementById('dish-name').value = item.n;
+            document.getElementById('dish-price').value = item.p;
+            document.getElementById('dish-img').value = item.i;
+            document.getElementById('edit-index').value = index;
+            document.getElementById('panel-title').innerText = "Edit Dish";
+            document.getElementById('submit-btn').innerText = "Save Changes";
+            togglePanel();
+        }
+
+        function deleteItem(index) {
+            if(confirm("Delete karsu?")) {
+                let m = JSON.parse(localStorage.getItem('f_data'));
+                m.splice(index, 1);
+                localStorage.setItem('f_data', JSON.stringify(m));
+                location.reload();
+            }
+        }
     </script>
 </body>
 </html>
