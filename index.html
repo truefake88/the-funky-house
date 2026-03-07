@@ -143,20 +143,32 @@
         function openAdmin() { document.getElementById('adminModal').classList.remove('hidden'); }
         function closeAdmin() { document.getElementById('adminModal').classList.add('hidden'); }
 
+        async function saveToSupabase() {        // Ye function naye item ko category ke sath save karega
         async function saveToSupabase() {
             const n = document.getElementById('n').value;
             const p = document.getElementById('p').value;
             const i = document.getElementById('i').value;
-            const category = document.getElementById('cat').value;
+            const category = document.getElementById('cat').value; // Ye Veg/Non-Veg pakadega
             
             if(n && p && i) {
+                // Supabase mein data bhej raha hai
                 const { error } = await _supabase.from('dishes').insert([{ n, p, i, category }]);
-                if (error) alert(error.message);
-                else { alert("Dish Saved Successfully!"); location.reload(); }
-            } else { alert("Please fill all details!"); }
+                if (error) {
+                    alert("Galti hui: " + error.message);
+                } else {
+                    alert("Badhai ho! Item save ho gaya.");
+                    location.reload(); // Website refresh karega naya item dikhane ke liye
+                }
+            } else {
+                alert("Bhai, pehle saari detail toh bhar do!");
+            }
         }
 
-        window.onload = loadMenu;
+        window.onload = loadMenu; // Page khulne par menu dikhayega
+    </script>
+</body>
+</html>
+
     </script>
 </body>
 </html>
