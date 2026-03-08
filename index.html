@@ -1,101 +1,75 @@
-:root {
-    --accent: #bc13fe; /* Purple Neon */
-    --gold: #ffcc00;
-    --bg: #030303;
-    --glass: rgba(255, 255, 255, 0.03);
+// Replace with your Supabase details
+const SUPABASE_URL = 'https://your-project-ref.supabase.co';
+const SUPABASE_ANON_KEY = 'your-anon-public-key-here';
+
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Increase visit count on load
+async function trackVisit() {
+  await supabase
+    .from('stats')
+    .update({ visit_count: supabase.raw('visit_count + 1') })
+    .eq('id', 1);
 }
+trackVisit();
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+// Load menu (from Supabase)
+async function loadMenu() {
+  const { data, error } = await supabase
+    .from('menu_items')
+    .select('*')
+    .order('category', { ascending: true });
 
-body {
-    background: var(--bg);
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
+  if (error) { console.log(error); return; }
+
+  const container = document.getElementById('menu-list');
+  container.innerHTML = '';
+
+  data.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'menu-item';
+    div.innerHTML = `
+      \( {item.image_url ? `<img src=" \){item.image_url}" alt="${item.name}"/>` : '<div style="height:180px;background:#333;"></div>'}
+      <h3>${item.name} - Rs. ${item.price}</h3>
+      <p>${item.description || ''}</p>
+      <small>${item.is_veg ? '🟢 Veg' : '🍗 Non-veg'}</small>
+    `;
+    container.appendChild(div);
+  });
 }
+loadMenu();
 
-/* Background Grid Animation */
-.bg-grid {
-    position: fixed;
-    inset: 0;
-    background-image: linear-gradient(to right, rgba(188, 19, 254, 0.05) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(188, 19, 254, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: -1;
-}
+// Booking form
+document.getElementById('booking-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-.glow-sphere {
-    position: fixed;
-    top: -10%; right: -10%;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(188, 19, 254, 0.15), transparent 70%);
-    filter: blur(80px);
-    z-index: -1;
-}
+  const booking = {
+    name: document.getElementById('name').value,
+    persons: parseInt(document.getElementById('persons').value),
+    phone: document.getElementById('phone').value,
+    message: document.getElementById('message').value,
+  };
 
-header {
-    display: flex; justify-content: space-between;
-    padding: 40px 10%; align-items: center;
-}
+  const { error } = await supabase.from('table_bookings').insert([booking]);
 
-.logo { font-family: 'Syncopate'; font-weight: 700; font-size: 1.2rem; letter-spacing: 3px; }
-.logo span { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+  if (!error) {
+    alert('Booking request sent! We will contact you soon.');
+    e.target.reset();
+  } else {
+    alert('Error: ' + error.message);
+  }
+});
 
-.hero { text-align: center; padding: 120px 5%; }
-.top-badge { 
-    background: var(--accent); color: white; padding: 5px 15px; 
-    font-size: 0.7rem; display: inline-block; margin-bottom: 20px;
-}
+// Star rating
+document.querySelectorAll('.stars button').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const rating = parseInt(btn.dataset.rating);
 
-h1 { font-family: 'Syncopate'; font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
-.gradient-text { 
-    background: linear-gradient(90deg, #fff, var(--accent));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
+    await supabase.from('ratings').insert([{ rating }]);
 
-.btn-primary {
-    background: white; color: black; padding: 18px 40px;
-    text-decoration: none; font-weight: 700; letter-spacing: 1px;
-    transition: 0.4s;
-}
-
-.btn-primary:hover { box-shadow: 0 0 30px rgba(255,255,255,0.4); }
-
-/* Glassmorphism Cards */
-.menu-container {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px; padding: 100px 10%;
-}
-
-.glass-card {
-    background: var(--glass);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px; overflow: hidden;
-    backdrop-filter: blur(20px); transition: 0.5s;
-}
-
-.glass-card:hover { transform: scale(1.02); border-color: var(--accent); }
-
-.card-img { width: 100%; height: 250px; background-size: cover; background-position: center; }
-
-.card-info { padding: 30px; }
-.price { color: var(--accent); float: right; font-weight: 700; }
-
-/* Booking Form Luxe */
-.booking-glass {
-    max-width: 800px; margin: 0 auto 100px;
-    padding: 60px; background: rgba(188, 19, 254, 0.02);
-    border: 1px dashed var(--accent); border-radius: 2px;
-}
-
-input, select {
-    width: 100%; padding: 20px; margin: 15px 0;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    color: white; outline: none;
-}
-
-.btn-glow {
-    width: 100%; padding: 20px; background: var(--accent);
-    color: white; border: none; font-weight: 700; cursor: pointer;
-    box-shadow: 0 0 20px var(--accent);
-}
+    document.querySelectorAll('.stars button').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.rating) <= rating);
+    });
+    document.getElementById('rating-thanks').style.display = 'block';
+  });
+});
