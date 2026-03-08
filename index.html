@@ -1,75 +1,91 @@
-// Replace with your Supabase details
-const SUPABASE_URL = 'https://your-project-ref.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-public-key-here';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Funky House - Funky Food & Vibes</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
-const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <header>
+    <h1>THE FUNKY HOUSE</h1>
+    <nav>
+      <a href="#menu">Menu</a>
+      <a href="#book">Book Table</a>
+      <a href="https://www.instagram.com/the_funkyhouse?igsh=MXhlbW9ucnpiZ3hucw==" target="_blank">Instagram</a>
+      <a href="https://www.facebook.com/funkyhouselokanthali" target="_blank">Facebook</a> <!-- change if wrong -->
+      <a href="https://share.google/hQUMseIzntR9NVcHx" target="_blank">Google Maps</a>
+    </nav>
+  </header>
 
-// Increase visit count on load
-async function trackVisit() {
-  await supabase
-    .from('stats')
-    .update({ visit_count: supabase.raw('visit_count + 1') })
-    .eq('id', 1);
-}
-trackVisit();
+  <section id="hero">
+    <h2>Welcome to The Funky House</h2>
+    <p>Grilled, Fried, Cheesy & Spicy – Just the way you like it!</p>
+  </section>
 
-// Load menu (from Supabase)
-async function loadMenu() {
-  const { data, error } = await supabase
-    .from('menu_items')
-    .select('*')
-    .order('category', { ascending: true });
+  <section id="info">
+    <h3>Service Options</h3>
+    <ul>
+      <li>No-contact delivery</li>
+      <li>Delivery</li>
+      <li>Drive-through</li>
+      <li>Takeaway</li>
+      <li>Dine-in</li>
+    </ul>
 
-  if (error) { console.log(error); return; }
+    <h3>Highlights</h3>
+    <p>Great beer selection • Great cocktails • Great coffee • Great tea • Great dessert</p>
 
-  const container = document.getElementById('menu-list');
-  container.innerHTML = '';
+    <h3>Popular for</h3>
+    <p>Lunch • Solo dining • Dinner</p>
 
-  data.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'menu-item';
-    div.innerHTML = `
-      \( {item.image_url ? `<img src=" \){item.image_url}" alt="${item.name}"/>` : '<div style="height:180px;background:#333;"></div>'}
-      <h3>${item.name} - Rs. ${item.price}</h3>
-      <p>${item.description || ''}</p>
-      <small>${item.is_veg ? '🟢 Veg' : '🍗 Non-veg'}</small>
-    `;
-    container.appendChild(div);
-  });
-}
-loadMenu();
+    <h3>Accessibility</h3>
+    <p>Wheelchair-accessible entrance • seating • car park</p>
+  </section>
 
-// Booking form
-document.getElementById('booking-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+  <section id="menu">
+    <h2>Our Menu</h2>
+    <div id="menu-list"></div>
+    <a href="menu.html" class="btn">See Full Menu →</a>
+  </section>
 
-  const booking = {
-    name: document.getElementById('name').value,
-    persons: parseInt(document.getElementById('persons').value),
-    phone: document.getElementById('phone').value,
-    message: document.getElementById('message').value,
-  };
+  <section id="book">
+    <h2>Book a Table</h2>
+    <form id="booking-form">
+      <input type="text" id="name" placeholder="Your Name" required/>
+      <select id="persons" required>
+        <option value="">Persons</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6+</option>
+      </select>
+      <input type="tel" id="phone" placeholder="Contact Number" required/>
+      <textarea id="message" placeholder="Any request / date / time"></textarea>
+      <button type="submit" class="btn">Send Booking Request</button>
+    </form>
+  </section>
 
-  const { error } = await supabase.from('table_bookings').insert([booking]);
+  <section id="rating">
+    <h2>How was your experience?</h2>
+    <div class="stars">
+      <button data-rating="1">★</button>
+      <button data-rating="2">★</button>
+      <button data-rating="3">★</button>
+      <button data-rating="4">★</button>
+      <button data-rating="5">★</button>
+    </div>
+    <p id="rating-thanks" style="display:none;">Thank you for your rating!</p>
+  </section>
 
-  if (!error) {
-    alert('Booking request sent! We will contact you soon.');
-    e.target.reset();
-  } else {
-    alert('Error: ' + error.message);
-  }
-});
+  <footer>
+    <p>&copy; 2026 The Funky House • Lokanthali / Bhaktapur</p>
+  </footer>
 
-// Star rating
-document.querySelectorAll('.stars button').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    const rating = parseInt(btn.dataset.rating);
-
-    await supabase.from('ratings').insert([{ rating }]);
-
-    document.querySelectorAll('.stars button').forEach(b => {
-      b.classList.toggle('active', parseInt(b.dataset.rating) <= rating);
-    });
-    document.getElementById('rating-thanks').style.display = 'block';
-  });
-});
+  <script src="script.js"></script>
+</body>
+</html>
