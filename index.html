@@ -1,91 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Funky House - Funky Food & Vibes</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Rawthink AI - Your Brand Online</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --accent: #ffc107; /* gold/yellow for plan 1 */
+      --accent2: #00ff9d; /* green for plan 2 */
+      --accent3: #c300ff; /* purple for plan 3 */
+    }
+    [data-theme="dark"] {
+      --bg: #000;
+      --text: #e0e0e0;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: var(--text);
+      margin: 0 1.5rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 2rem;
+      background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.6)), url('your-hero-bg.jpg');
+      background-size: cover;
+    }
+    .hero h1 {
+      font-size: 5rem;
+      margin: 0;
+      background: linear-gradient(90deg, var(--accent), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite alternate;
+    }
+    @keyframes glow { 0% { text-shadow: 0 0 10px var(--accent);} 100% { text-shadow: 0 0 30px var(--accent);} }
+    .btn {
+      background: var(--accent);
+      color: #000;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: all 0.4s;
+    }
+    .btn:hover { transform: scale(1.05); box-shadow: 0 0 30px var(--accent); }
+    section {
+      padding: 8rem 5%;
+      min-height: 60vh;
+    }
+    .plans { display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap; }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      width: 350px;
+      text-align: center;
+      transition: transform 0.5s;
+    }
+    .card:hover { transform: translateY(-20px); border-color: var(--accent); }
+    /* Scroll animation example (use Intersection Observer in JS for real fade-in) */
+    .reveal { opacity: 0; transform: translateY(60px); transition: all 1s; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+  </style>
 </head>
 <body>
 
   <header>
-    <h1>THE FUNKY HOUSE</h1>
+    <div>RAWTHINK AI • NEPAL</div>
     <nav>
-      <a href="#menu">Menu</a>
-      <a href="#book">Book Table</a>
-      <a href="https://www.instagram.com/the_funkyhouse?igsh=MXhlbW9ucnpiZ3hucw==" target="_blank">Instagram</a>
-      <a href="https://www.facebook.com/funkyhouselokanthali" target="_blank">Facebook</a> <!-- change if wrong -->
-      <a href="https://share.google/hQUMseIzntR9NVcHx" target="_blank">Google Maps</a>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
     </nav>
   </header>
 
-  <section id="hero">
-    <h2>Welcome to The Funky House</h2>
-    <p>Grilled, Fried, Cheesy & Spicy – Just the way you like it!</p>
+  <section class="hero" id="home">
+    <h1>WELCOME TO OUR WORLD</h1>
+    <h2 style="font-size:3rem; margin:1rem 0;">YOUR BRAND ONLINE.</h2>
+    <p>A beautifully crafted website that tells your story and brings customers to your door.</p>
+    <button class="btn">EXPLORE NOW</button>
   </section>
 
-  <section id="info">
-    <h3>Service Options</h3>
-    <ul>
-      <li>No-contact delivery</li>
-      <li>Delivery</li>
-      <li>Drive-through</li>
-      <li>Takeaway</li>
-      <li>Dine-in</li>
-    </ul>
-
-    <h3>Highlights</h3>
-    <p>Great beer selection • Great cocktails • Great coffee • Great tea • Great dessert</p>
-
-    <h3>Popular for</h3>
-    <p>Lunch • Solo dining • Dinner</p>
-
-    <h3>Accessibility</h3>
-    <p>Wheelchair-accessible entrance • seating • car park</p>
-  </section>
-
-  <section id="menu">
-    <h2>Our Menu</h2>
-    <div id="menu-list"></div>
-    <a href="menu.html" class="btn">See Full Menu →</a>
-  </section>
-
-  <section id="book">
-    <h2>Book a Table</h2>
-    <form id="booking-form">
-      <input type="text" id="name" placeholder="Your Name" required/>
-      <select id="persons" required>
-        <option value="">Persons</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6+</option>
-      </select>
-      <input type="tel" id="phone" placeholder="Contact Number" required/>
-      <textarea id="message" placeholder="Any request / date / time"></textarea>
-      <button type="submit" class="btn">Send Booking Request</button>
-    </form>
-  </section>
-
-  <section id="rating">
-    <h2>How was your experience?</h2>
-    <div class="stars">
-      <button data-rating="1">★</button>
-      <button data-rating="2">★</button>
-      <button data-rating="3">★</button>
-      <button data-rating="4">★</button>
-      <button data-rating="5">★</button>
+  <section id="plans">
+    <h2 style="text-align:center; font-size:3rem;">OUR PACKAGES</h2>
+    <div class="plans">
+      <div class="card reveal">
+        <h3>STARTER — PLAN 01</h3>
+        <p style="font-size:2.5rem; color:var(--accent);">NPR 40K+</p>
+        <ul style="list-style:none; padding:0;">
+          <li>Home + Scroll Animations</li>
+          <li>About • Contact</li>
+        </ul>
+        <button class="btn">Get Started</button>
+      </div>
+      <!-- Add more cards for Plan 02 & 03 similarly -->
     </div>
-    <p id="rating-thanks" style="display:none;">Thank you for your rating!</p>
   </section>
 
-  <footer>
-    <p>&copy; 2026 The Funky House • Lokanthali / Bhaktapur</p>
-  </footer>
+  <!-- Add more sections: features, contact form, etc. -->
 
-  <script src="script.js"></script>
+  <script>
+    // Simple scroll reveal
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("active");
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
